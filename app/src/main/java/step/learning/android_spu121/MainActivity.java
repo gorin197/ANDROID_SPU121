@@ -1,12 +1,12 @@
 package step.learning.android_spu121;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     private TextView textView;
@@ -21,6 +21,10 @@ public class MainActivity extends AppCompatActivity {
 
         Button button= findViewById(R.id.main_button_hello);
         button.setOnClickListener(this::helloClick);
+
+        findViewById(R.id.main_button_game).setOnClickListener(this::gameClick);
+
+
     }
     private void helloClick(View view){
     //textView.setText(textView.getText()+"Oh!");
@@ -35,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
     public void openCalcActivity1(View view) {
         Intent intent = new Intent(this, CalcActivity1.class);
         startActivity(intent);
+    }
+
+    private void gameClick(View view){
+        //textView.setText(textView.getText()+"Oh!");
+        Intent gameIntent= new Intent(this. getApplicationContext(), GameActivity.class);
+        startActivity(gameIntent);
     }
 
 
