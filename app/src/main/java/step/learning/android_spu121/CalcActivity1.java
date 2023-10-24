@@ -55,8 +55,8 @@ public class CalcActivity1 extends AppCompatActivity {
         btnMinus.setOnClickListener(this::minusClick);
         Button btnMultiplication=findViewById(R.id.calc_btn_multiplication);
         btnMultiplication.setOnClickListener(this::multiplicateClick);
-        Button btnMDevide=findViewById(R.id.calc_btn_divide);
-        btnMDevide.setOnClickListener(this::devideClick);
+        Button btnDevide=findViewById(R.id.calc_btn_divide);
+        btnDevide.setOnClickListener(this::devideClick);
 
     }
 

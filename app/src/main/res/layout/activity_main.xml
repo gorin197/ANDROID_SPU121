@@ -10,10 +10,10 @@
         android:id="@+id/main_tv_hello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello Android!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/maim_tv_hello_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:textSize="30sp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -35,21 +35,20 @@
             android:layout_height="58dp"
             android:src="@drawable/ic_calc_icon"
             android:layout_marginEnd="8dp"
-            android:onClick="openCalcActivity" />
+            android:onClick="openCalcActivity"
+            android:contentDescription="@string/calc_title"/>
 
         <ImageView
             android:id="@+id/iv_calc1_icon"
             android:layout_width="58dp"
             android:layout_height="58dp"
             android:src="@drawable/ic_calc1_icon"
-            android:onClick="openCalcActivity1" />
-
-
-
+            android:onClick="openCalcActivity1"
+            android:contentDescription="@string/calc_title"/>
 
     <Button
         android:id="@+id/main_button_hello"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/maim_button_hello_text"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -58,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/main_tv_hello" />
     <Button
         android:id="@+id/main_button_game"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/main_button_game"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -66,5 +65,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_tv_hello" />
     </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

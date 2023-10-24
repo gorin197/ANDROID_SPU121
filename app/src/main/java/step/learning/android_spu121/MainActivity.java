@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         Button button= findViewById(R.id.main_button_hello);
         button.setOnClickListener(this::helloClick);
 
-        findViewById(R.id.main_button_game).setOnClickListener(this::gameClick);
+        findViewById(R.id.main_button_game).setOnClickListener(this::startGame);
 
 
     }
@@ -41,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void gameClick(View view){
-        //textView.setText(textView.getText()+"Oh!");
-        Intent gameIntent= new Intent(this. getApplicationContext(), GameActivity.class);
-        startActivity(gameIntent);
+    private void startGame( View view ) {
+        // startActivity( new Intent( this.getApplicationContext(), GameActivity.class ) );
+        Intent intent = new Intent(this, GameActivity   .class);
+        startActivity(intent);
     }
 
 

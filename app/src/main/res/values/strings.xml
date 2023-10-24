@@ -6,13 +6,13 @@
 
     <!-- 2048 -->
     <string name="game_tv_title">2048</string>
-    <string name="game_tv_hint">Join Numbers</string>
-    <string name="game_tv_score">Score\n%d</string>
-    <string name="game_tv_best">Record\n%d</string>
-    <string name="game_btn_new">F</string>
-    <string name="game_btn_undo">N</string>
+    <string name="game_tv_hint">СОБЕРИ ЧИСЛО 2048</string>
+    <string name="game_tv_score">СЧЕТ\n%d</string>
+    <string name="game_tv_best">РЕКОРД\n%d</string>
+    <string name="game_btn_new">НОВАЯ</string>
+    <string name="game_btn_undo">НАЗАД</string>
 
-
+    <!-- Calculator -->
     <string name="calc_title">Calculator</string>
     <string name="calc_btn_percent">%</string>
     <string name="calc_btn_ce">CE</string>
