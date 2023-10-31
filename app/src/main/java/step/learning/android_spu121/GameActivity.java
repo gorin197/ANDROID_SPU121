@@ -1,23 +1,29 @@
 package step.learning.android_spu121;
 
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Stack;
 
 public class GameActivity extends AppCompatActivity  {
     private static final int N = 4;
@@ -31,6 +37,10 @@ public class GameActivity extends AppCompatActivity  {
     private Animation spanCellAnimation;
     private Animation collapseCellAnimation;
     private MediaPlayer spawnSound;
+    private Stack<int[][]> cellStates = new Stack<>(); //переменная  в стэке для сохранения массива  cells
+    private Stack<Integer> scoreStates = new Stack<>();//переменная  в стэке для сохранения текущего счета
+    private Stack<Integer> bestScoreStates = new Stack<>();//переменная  в стэке для сохранения действующего рекорда
+
 
 
     @Override
@@ -51,7 +61,6 @@ if(event.getAction()==KeyEvent.ACTION_DOWN){
             return true;
     }
 }
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -66,6 +75,12 @@ if(event.getAction()==KeyEvent.ACTION_DOWN){
         collapseCellAnimation.reset();
         tvScore=findViewById(R.id.game_tv_score);
         tvBestScore= findViewById(R.id.game_tv_best);
+        findViewById(R.id.game_btn_undo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                undoLastMove();
+            }
+        });
 
         // пошук ідентифікаторів за іменем (String) та ресурсів через них
         for (int i = 0; i <N ; i++) {
@@ -130,13 +145,14 @@ if(event.getAction()==KeyEvent.ACTION_DOWN){
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 cells[i][j]=0;
-
             }
-
         }
+        score=0;
         spanCell();
         spanCell();
+        readBestScore();
         showField();
+
     }
     /**
      * Поставити нове число у випадкову вільну комірку.
@@ -185,6 +201,9 @@ if(event.getAction()==KeyEvent.ACTION_DOWN){
         }
         // виводимо рахунок та кращий (заповнюючи плейсхолдер ресурсу)
         tvScore.setText(getString(R.string.game_tv_score,score));
+        if (score > bestScore) {
+            bestScore = score;
+        }
         tvBestScore.setText(getString(R.string.game_tv_best,bestScore));
     }
     private  boolean canMoveLeft(){
@@ -391,14 +410,27 @@ return  false;
 
     private  void processMove(MoveDirection direction){
         if(canMove(direction)){
+            // при каждом ходе сохраняем текущее состояние игры в стеках:
+            cellStates.push(copyCells(cells));
+            scoreStates.push(score);
+            bestScoreStates.push(bestScore);
             move(direction);
             spanCell();
             showField();
-            checkGameState();
+            if (checkWin()) { //Проверяем на выиграш
+                // Выводим сообщение
+                showWinDialog();
+            } else if (checkLose()) {
+                // Проверяем на проигрыш и выводим сообщение
+                showLoseDialog();
+            }
+
         }
-//        else { //Проверяем на проигрыш
-//            Toast.makeText( GameActivity.this, "НЕТ ХОДА!", Toast.LENGTH_SHORT ).show();
-//        }
+        else {
+            //Нет хода , выводим сообщение
+            //Toast.makeText( GameActivity.this, "НЕТ ХОДА!", Toast.LENGTH_SHORT ).show();
+            showLoseDialog();
+        }
     }
         //Проверяем на выиграш
     private boolean checkWin() {
@@ -414,36 +446,89 @@ return  false;
 
     //Проверяем на проигрыш
     private boolean checkLose() {
-        if (canMoveLeft() || canMoveRight() || canMoveUp() || canMoveDown()) {
-            return false; // Больше нет ходов
+        if (!canMoveLeft() && !canMoveRight() && !canMoveUp() && !canMoveDown()) {
+            return true; // Проигрыш
         }
-        Toast.makeText( GameActivity.this, "GAME OVER!", Toast.LENGTH_SHORT ).show();
-        return true;
+        return false; // Продолжаем игру
     }
 
-    private void checkGameState() {
-        if (checkWin()) {
-            // Виграш
-            showGameOverDialog("You win!", "Вы достигли числчёа 2048!");
-        } else if (checkLose()) {
-            // Програш
-            showGameOverDialog("GAME OVER!", "Больше бежать некуда!>");
-        }
-    }
+//Метод  showWinDialog() будет отображать соответствующее сообщение, когда игра закончится при
+// наборе числа 2048,и даст возможность игроку выбрать, хочет ли он играть снова или выйти из игры.
 
-    private void showGameOverDialog(String title, String message) {
+    private void showWinDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Нова гра", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        newGame();
-                    }
-                })
-                .setCancelable(false)
-                .show();
+        builder.setTitle("Сообщение системы:");
+        builder.setMessage("Вы выиграли! Ви набрали 2048.");
+        builder.setPositiveButton("Играть Заново", (dialog, which) -> newGame());
+        builder.setNegativeButton("Выйти с игры", (dialog, which) -> finish());
+        builder.setCancelable(false);// Обязательное нажатие кнопок диалога
+        builder.show();
+        saveBestScore(bestScore);
+
     }
+
+    //Метод  showLoseDialog() будет отображать соответствующее сообщение, когда игра закончится
+    // при отсутствии возможности дальнейших ходов и даст возможность игроку выбрать, хочет ли он
+    // играть снова или выйти из игры.
+
+    private void showLoseDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Сообщение системы:");
+        builder.setMessage("Игра завершена,ходов больше нет");
+        builder.setPositiveButton("Попробовать еще разок", (dialog, which) -> newGame());
+        builder.setNegativeButton("Выйти из игры", (dialog, which) -> finish());
+        builder.setCancelable(false); // Обязательное нажатие кнопок диалога
+        builder.show();
+        saveBestScore(bestScore);
+
+    }
+    //Метод сохранения наилучшего рекорда
+    private void saveBestScore( int bestScore) {
+        try {
+            FileOutputStream fos = openFileOutput("best_score.txt", Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeInt(bestScore);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    //Метод загрузки наилучшего рекорда
+    private int readBestScore() {
+        bestScore = 0;
+        try {
+            FileInputStream fis = openFileInput("best_score.txt");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            bestScore = ois.readInt();
+            ois.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bestScore;
+    }
+    //Метод для возвращения на один ход назад где можем вытащить состояние из стеков и восстановить его:
+    private void undoLastMove() {
+        if (!cellStates.isEmpty() && !scoreStates.isEmpty() && !bestScoreStates.isEmpty()) {
+            cells = cellStates.pop();
+            score = scoreStates.pop();
+            bestScore = bestScoreStates.pop();
+            showField();
+        }
+    }
+
+    //Этот метод создает новый массив copy и копирует значения из оригинального массива
+    // cells в copy
+    private int[][] copyCells(int[][] cells) {
+        int[][] copy = new int[cells.length][cells[0].length];
+        for (int i = 0; i < cells.length; i++) {
+            System.arraycopy(cells[i], 0, copy[i], 0, cells[i].length);
+        }
+        return copy;
+    }
+
+
+
+
 }
 
 

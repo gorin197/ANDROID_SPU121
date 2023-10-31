@@ -3,6 +3,7 @@
     <string name="maim_tv_hello_text">Основы Андроид</string>
     <string name="maim_button_hello_text">Press me</string>
     <string name="main_button_game">2048</string>
+    <string name="main_button_chat">Chat</string>
 
     <!-- 2048 -->
     <string name="game_tv_title">2048</string>
@@ -39,4 +40,14 @@
     <string name="calc_btn_8">8</string>
     <string name="calc_btn_9">9</string>
     <string name="calc_div_zero_message">Cannot divide by zero</string>
+
+    <string name="click_info">Information by click</string>
+    <string name="motion_info">Information by move</string>
+    <string name="click_me">Click</string>
+
+    <!--Chat -->
+    <string name="chat_tv_title">Communicator</string>
+    <string name="chat_tv_nik">Nic</string>
+    <string name="chat_et_nik">DNS</string>
+
 </resources>

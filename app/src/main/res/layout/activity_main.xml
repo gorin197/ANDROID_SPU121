@@ -64,8 +64,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_tv_hello" />
+
     </LinearLayout>
 
+    <Button
+        android:id="@+id/main_button_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/main_button_chat"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.402"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_tv_hello"
+        app:layout_constraintVertical_bias="0.147" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

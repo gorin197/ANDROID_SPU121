@@ -37,6 +37,12 @@
     <color name="game_cell_background_2048">#DF0846</color>
     <color name="game_cell_foreground_2048">#F8F5F1</color>
 
+    <!--Chat-->
+    <color name="chat_msg_mine_background">#E8D6A0</color>
+    <color name="chat_msg_other_background">#EFB70C</color>
+    <color name="chat_msg_mine_border">#F1C84B</color>
+    <color name="chat_msg_other_border">#F8F5F1</color>
+
 
 
 

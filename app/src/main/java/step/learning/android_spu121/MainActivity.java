@@ -19,18 +19,21 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.main_tv_hello);
         textView.setText(R.string.maim_tv_hello_text);
 
-        Button button= findViewById(R.id.main_button_hello);
+        Button button = findViewById(R.id.main_button_hello);
         button.setOnClickListener(this::helloClick);
 
         findViewById(R.id.main_button_game).setOnClickListener(this::startGame);
+        findViewById(R.id.main_button_chat).setOnClickListener(this::startChat);
 
 
     }
-    private void helloClick(View view){
-    //textView.setText(textView.getText()+"Oh!");
-        Intent testIntent= new Intent(this. getApplicationContext(), TestActivity.class);
+
+    private void helloClick(View view) {
+        //textView.setText(textView.getText()+"Oh!");
+        Intent testIntent = new Intent(this.getApplicationContext(), TestActivity.class);
         startActivity(testIntent);
     }
+
     public void openCalcActivity(View view) {
         Intent intent = new Intent(this, CalcActivity.class);
         startActivity(intent);
@@ -41,11 +44,16 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void startGame( View view ) {
+    private void startGame(View view) {
         // startActivity( new Intent( this.getApplicationContext(), GameActivity.class ) );
-        Intent intent = new Intent(this, GameActivity   .class);
+        Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
+
     }
 
+    private void startChat(View view) {
+        // startActivity( new Intent( this.getApplicationContext(), GameActivity.class ) );
+        startActivity((new Intent( this.getApplicationContext(),ChatActivity.class)));
 
+    }
 }
