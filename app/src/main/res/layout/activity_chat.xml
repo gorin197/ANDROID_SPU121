@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ChatActivity">
 
+
     <TextView
         android:id="@+id/chat_tv_title"
         android:layout_width="match_parent"
@@ -44,19 +45,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="@string/chat_et_nik" />
+            tools:text="@string/chat_et_nik" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/chat_btn_save_nik"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@android:drawable/ic_menu_save" />
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5" />
+        <ImageButton
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_dialog_email"
+            />
+
+
     </LinearLayout>
 
     <ScrollView
@@ -75,6 +81,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"/>
     </ScrollView>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -97,5 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_send"/>
+
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,7 +42,7 @@ public class GameActivity extends AppCompatActivity  {
     private Stack<Integer> bestScoreStates = new Stack<>();//переменная  в стэке для сохранения действующего рекорда
 
 
-
+//Добавлена возможность управления с клавиатуры
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 if(event.getAction()==KeyEvent.ACTION_DOWN){
@@ -75,6 +75,7 @@ if(event.getAction()==KeyEvent.ACTION_DOWN){
         collapseCellAnimation.reset();
         tvScore=findViewById(R.id.game_tv_score);
         tvBestScore= findViewById(R.id.game_tv_best);
+        //Установлен обработчик событий на кнопку "Назад"
         findViewById(R.id.game_btn_undo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

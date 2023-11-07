@@ -1,70 +1,73 @@
 package step.learning.android_spu121.orm;
 
-import static java.util.Locale.UK;
-
 import android.util.Log;
+import android.view.View;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class ChatMessage {
-    private String id;
-    private String author;
-    private String text;
-    private String moment;
-    private static final SimpleDateFormat momentFormat = new SimpleDateFormat("yyyy-MM-dd  hh:mm:ss",UK );
-    public Date getMomentAsDate(){
+    private String id ;
+    private String author ;
+    private String text ;
+    private String moment ;
+
+
+
+    private View view;
+
+
+    private static final SimpleDateFormat momentFormat =
+            new SimpleDateFormat( "yyyy-MM-dd hh:mm:ss", Locale.UK ) ;
+    public Date getMomentAsDate() {
         try {
-
-                return momentFormat.parse(this.getMoment());
-
-            }
-            catch (ParseException ex){
-                Log.d("ChatMessage::getMomentAsDate",ex.getMessage() + ""+ this.getMoment());
+            return momentFormat.parse( this.getMoment() ) ;
         }
-        return getMomentAsDate();
+        catch( ParseException ex ) {
+            Log.d( "ChatMessage::getMomentAsDate",
+                    ex.getMessage() + " " + this.getMoment() ) ;
+            return null ;
+        }
     }
-
     public String getId() {
         return id;
     }
-
-    public void setId(String id) {
+    public void setId( String id ) {
         this.id = id;
     }
-
-    public String getAythor() {
+    public String getAuthor() {
         return author;
     }
-
-    public void setAythor(String aythor) {
+    public void setAuthor( String author ) {
         this.author = author;
     }
-
     public String getText() {
         return text;
     }
-
-    public void setText(String text) {
+    public void setText( String text ) {
         this.text = text;
     }
-
     public String getMoment() {
         return moment;
     }
-
-    public void setMoment(String moment) {
+    public void setMoment( String moment ) {
         this.moment = moment;
     }
+    public View getView() {
+        return view;
+    }
+    public void setView(View view) {
+        this.view = view;
+    }
 }
-
-
 /*
- {
-      "id": "2143",
-      "author": "Max",
-      "text": "324",
-      "moment": "2023-10-27 10:46:46"
-    },
+ORM for chat message
+{
+  "id": "2139",
+  "author": "Max",
+  "text": "123 :)",
+  "moment": "2023-10-27 10:00:38"
+},
  */
