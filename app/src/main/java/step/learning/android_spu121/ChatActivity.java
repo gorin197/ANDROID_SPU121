@@ -35,12 +35,15 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import step.learning.android_spu121.orm.ChatMessage;
 import step.learning.android_spu121.orm.ChatResponse;
 
 public class ChatActivity extends AppCompatActivity {
+
     private final static String chatHost = "https://chat.momentfor.fun" ;
     private static final String savesFilename = "saves.chat";
     private final byte[] buffer = new byte[ 8192 ] ;
@@ -51,11 +54,15 @@ public class ChatActivity extends AppCompatActivity {
     private ScrollView svContainer ;
     private LinearLayout llContainer ;
     private Handler handler;
-    private Animation mailAnimation;    //Ресурск в качестве аннимации
-    private Animation mailAnimationPulls;//Ресурск в качестве аннимации
+    private Animation mailAnimation;    //Ресурс в качестве аннимации
     private ImageView newMessage;
-    private MediaPlayer mailSound;//Ресурск в качестве звукого сопровождения
-
+    private MediaPlayer mailSound;//Ресурс в качестве звукого сопровождения
+    //private ImageButton attachmentsButton;
+    //private static final int PICK_FILE_REQUEST_CODE = 123;
+    private final Map<String,String> emoji= new HashMap<String,String>(){{
+        put(":)",new String(Character.toChars(0x1f600)));
+        put(":(",new String(Character.toChars(0x1f612)));
+    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +75,12 @@ public class ChatActivity extends AppCompatActivity {
         llContainer = findViewById( R.id.chat_ll_container ) ;
         findViewById( R.id.chat_btn_send ).setOnClickListener( this::sendButtonClick );
         findViewById( R.id.chat_btn_save_nik ).setOnClickListener( this::saveNikClick );
+//        findViewById( R.id.chat_btn_attachments).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //showAttachmentDialog();
+//            }
+//        });
         handler=new Handler();
         handler.post(this::updateChat);
 
@@ -78,9 +91,6 @@ public class ChatActivity extends AppCompatActivity {
                 ChatActivity.this,
                 R.anim.mail_convert_anim);
         mailAnimation.reset();
-        mailAnimationPulls = AnimationUtils.loadAnimation(
-                ChatActivity.this,
-                R.anim.mail_convert_puls);
         if(!loadNik()){
             etNik.requestFocus();
             Toast.makeText(this,"Choose",Toast.LENGTH_LONG).show();
@@ -97,9 +107,11 @@ public class ChatActivity extends AppCompatActivity {
             writer.write( nik.getBytes( StandardCharsets.UTF_8 ) );
         }
         catch( IOException ex ) {
-            Log.e( "saveNikClick", ex.getMessage() ) ;
+            String errorMessage = (ex.getMessage() != null) ? ex.getMessage() : "IOException occurred with no message";
+            Log.e("saveNikClick", errorMessage, ex);
         }
     }
+
     private boolean loadNik() {
         try( FileInputStream reader = openFileInput( savesFilename ) ) {
             String nik = readString( reader ) ;
@@ -109,15 +121,19 @@ public class ChatActivity extends AppCompatActivity {
             etNik.setText( nik );
             return true ;
         }
-        catch( IOException ex ) {
-            Log.e( "loadNik", ex.getMessage() ) ;
-            return false ;
+        catch (IOException ex) {
+            String errorMessage = (ex.getMessage() != null) ? ex.getMessage() : "IOException occurred with no message";
+            Log.e("loadNik", errorMessage, ex);
+            return false;
         }
+
     }  // /data/user/0/step.learning.androidspu121/files/saves.chat
+
     private  void updateChat(){
         new Thread( this::loadChatMessages ).start() ;
         handler.postDelayed(this::updateChat,3000);
     }
+
     private void sendButtonClick( View view ) {
         String nik = etNik.getText().toString() ;
         String message = etMessage.getText().toString();
@@ -131,6 +147,7 @@ public class ChatActivity extends AppCompatActivity {
         }
         final ChatMessage chatMessage = new ChatMessage();
         chatMessage.setAuthor( nik );
+        //message.replaceAll(":0",new String((Character.toChars(0x1f600))));
         chatMessage.setText( message );
         newMessage.startAnimation(mailAnimation);//Запускаем анимацию
         mailSound.start();                       //Запускае звук
@@ -169,9 +186,9 @@ public class ChatActivity extends AppCompatActivity {
             if( statusCode == 201 ) {  // у разі успіху приходить лише статус, тіла немає
                 Log.d( "postChatMessage", "Sent OK" ) ;
                 new Thread( this::loadChatMessages ).start();
-                runOnUiThread(()-> {
-                    etMessage.setText("");
-                    etMessage.requestFocus();
+                runOnUiThread( () -> {
+                    etMessage.setText( "" );
+                    etMessage.requestFocus() ;
                 });
             }
             else {  // якщо не успіх, то повідомлення про помилку - у тілі
@@ -183,9 +200,11 @@ public class ChatActivity extends AppCompatActivity {
             // 4. Закриваємо підключення, звільняємо ресурс
             connection.disconnect();
         }
-        catch( Exception ex ) {
-            Log.e( "postChatMessage", ex.getMessage() ) ;
+        catch (Exception ex) {
+            String errorMessage = (ex.getMessage() != null) ? ex.getMessage() : "An exception occurred with no message";
+            Log.e("postChatMessage", errorMessage, ex);
         }
+
     }
     private String readString( InputStream inputStream ) throws IOException {
         ByteArrayOutputStream builder = new ByteArrayOutputStream() ;
@@ -197,6 +216,7 @@ public class ChatActivity extends AppCompatActivity {
         builder.close() ;
         return result ;
     }
+
     private void loadChatMessages() {
         try {
             URL chatUrl = new URL( chatHost ) ;
@@ -246,7 +266,7 @@ public class ChatActivity extends AppCompatActivity {
         boolean needScroll=false;
         for( ChatMessage chatMessage : this.chatMessages ) {
             if( chatMessage.getView() == null ) {
-                View messageView = createChatMessageView( chatMessage );
+                View messageView = createChatMessageView ( chatMessage );
                 chatMessage.setView( messageView );
                 llContainer.addView( messageView );
                 needScroll = true ;  // додавання View вниз вимагає прокрутки контейнера
@@ -259,8 +279,10 @@ public class ChatActivity extends AppCompatActivity {
             //    прораховані. Команду прокрутки треба ставити у чергу за відображенням
             svContainer.post( () -> svContainer.fullScroll( View.FOCUS_DOWN ) );
         }
+
+
     }
-    private View createChatMessageView( ChatMessage chatMessage ) {
+    private View createChatMessageView(ChatMessage chatMessage) {
         // у цьому варіанті свої повідомлення визначаються за збігом автора
         boolean isMine = chatMessage.getAuthor().contentEquals( etNik.getText() ) ;
         // Створення елемента програмно складається з кількох дій
@@ -299,37 +321,16 @@ public class ChatActivity extends AppCompatActivity {
         messageLayout.addView( textView ) ;
 
         textView = new TextView( this ) ;
-        textView.setText( chatMessage.getText() ) ;
+        String emojiText=chatMessage.getText();
+        for(String key:emoji.keySet()){
+            // emojiText=emojiText.replace(key,emoji.get(key));
+            emojiText = emojiText.replace(key, emoji.get(key) != null ? emoji.get(key) : "");
+
+        }
+        textView.setText(emojiText);
         messageLayout.addView( textView ) ;
 
         return messageLayout ;
     }
+
 }
-
-
-/*
-Робота з мережею Інтернет
-Основний об'єкт для роботи з мережею - URL. Він дещо нагадує File у контексті
-надання доступу до даних, а також у тому, що створення об'єкту не спричинює
-мережної активності. Звернення до мережі починається при зверненні до методів
-цього об'єкта
-Особливості
-1) android.os.NetworkOnMainThreadException
-     Звертатись до мережі не можна з UI потоку, необхідно створювати новий потік
-2) java.lang.SecurityException: Permission denied (missing INTERNET permission?)
-     Для роботи з мережею необхідно зазначити дозвіл у маніфесті
-     <uses-permission android:name="android.permission.INTERNET"/>
-3) android.view.ViewRootImpl$CalledFromWrongThreadException:
-     Only the original thread that created a view hierarchy can touch its views.
-     Оскільки робота з мережею ведеться з окремого потоку, прямі звернені до
-     елементів UI не дозволяються. Делегування запуску здійснюється методом
-     runOnUiThread(...)
- */
-/*
-Д.З. Проєкт "Чат"
-- зробити одночасне відображення повідомлень у двох стилях (власні та інші)
-   (через один або за випадковим алгоритмом)
-- додати іконку "нове повідомлення" (дзвоник або конверт або ...), реалізувати для
-   неї анімацію, програвати її при натисканні кнопки "надіслати"
-- додати звук нового повідомлення, програвати його разом з анімацією
- */
