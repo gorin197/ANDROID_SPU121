@@ -57,6 +57,7 @@ public class ChatActivity extends AppCompatActivity {
     private Animation mailAnimation;    //Ресурс в качестве аннимации
     private ImageView newMessage;
     private MediaPlayer mailSound;//Ресурс в качестве звукого сопровождения
+    private String selectedSmiley = "";
     //private ImageButton attachmentsButton;
     //private static final int PICK_FILE_REQUEST_CODE = 123;
     private final Map<String,String> emoji= new HashMap<String,String>(){{
@@ -75,12 +76,10 @@ public class ChatActivity extends AppCompatActivity {
         llContainer = findViewById( R.id.chat_ll_container ) ;
         findViewById( R.id.chat_btn_send ).setOnClickListener( this::sendButtonClick );
         findViewById( R.id.chat_btn_save_nik ).setOnClickListener( this::saveNikClick );
-//        findViewById( R.id.chat_btn_attachments).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //showAttachmentDialog();
-//            }
-//        });
+        findViewById( R.id.chat_btn_emoji_8).setOnClickListener(this::smileSent_8);//Смайлик1
+        findViewById( R.id.chat_btn_emoji_7).setOnClickListener(this::smileSent_7);//Смайлик2
+        findViewById( R.id.chat_btn_emoji_6).setOnClickListener(this::smileSent_6);//Смайлик3
+
         handler=new Handler();
         handler.post(this::updateChat);
 
@@ -96,6 +95,26 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(this,"Choose",Toast.LENGTH_LONG).show();
         }
     }
+
+    private void smileSent_6(View view) {
+        selectedSmiley =  "\uD83E\uDD26\u200D\uD83E\uDD1E"    ;
+        etMessage.getText().append(selectedSmiley);
+        selectedSmiley = etMessage.getText().toString();
+    }
+
+    private void smileSent_8(View view) {
+        selectedSmiley = "\uD83D\uDE00";
+        etMessage.getText().append(selectedSmiley);
+        selectedSmiley = etMessage.getText().toString();
+    }
+
+    private void smileSent_7(View view) {
+
+        selectedSmiley = "\uD83E\uDD70";
+        etMessage.getText().append(selectedSmiley);
+        selectedSmiley = etMessage.getText().toString();
+    }
+
     private void saveNikClick( View view ) {
         String nik = etNik.getText().toString() ;
         if( nik.isEmpty() ) {
@@ -147,7 +166,6 @@ public class ChatActivity extends AppCompatActivity {
         }
         final ChatMessage chatMessage = new ChatMessage();
         chatMessage.setAuthor( nik );
-        //message.replaceAll(":0",new String((Character.toChars(0x1f600))));
         chatMessage.setText( message );
         newMessage.startAnimation(mailAnimation);//Запускаем анимацию
         mailSound.start();                       //Запускае звук
@@ -321,7 +339,7 @@ public class ChatActivity extends AppCompatActivity {
         messageLayout.addView( textView ) ;
 
         textView = new TextView( this ) ;
-        String emojiText=chatMessage.getText();
+        String emojiText=chatMessage.getText() + selectedSmiley ;;
         for(String key:emoji.keySet()){
             // emojiText=emojiText.replace(key,emoji.get(key));
             emojiText = emojiText.replace(key, emoji.get(key) != null ? emoji.get(key) : "");
@@ -329,6 +347,8 @@ public class ChatActivity extends AppCompatActivity {
         }
         textView.setText(emojiText);
         messageLayout.addView( textView ) ;
+
+
 
         return messageLayout ;
     }
