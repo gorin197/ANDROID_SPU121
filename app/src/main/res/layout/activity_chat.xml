@@ -90,22 +90,43 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
+        xmlns:emojicon="http://schemas.android.com/apk/res-auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.08"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chat_sv_container"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="MissingClass">
+
+        <ImageView
+            android:id="@+id/emoji_btn"
+            android:layout_gravity="start"
+            android:src="@mipmap/emoji_icon"
+            android:padding="4dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
         
 
         <EditText
-            android:id="@+id/chat_et_message"
+                android:id="@+id/chat_et_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Input message" />
 
-        <ImageButton
+
+
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
+            android:id="@+id/text_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            emojicon:emojiconSize="28sp" />
+
+
+"
+
+            <ImageButton
             android:id="@+id/chat_btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -113,29 +134,29 @@
             app:fabSize="normal"
             app:tint="@color/black" />
 
-        <ImageButton
-            android:id="@+id/chat_btn_emoji_8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTintMode="screen"
-            android:defaultFocusHighlightEnabled="true"
-            android:src="@drawable/icons8" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/chat_btn_emoji_8"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTintMode="screen"-->
+<!--            android:defaultFocusHighlightEnabled="true"-->
+<!--            android:src="@drawable/icons8" />-->
 
-        <ImageButton
-            android:id="@+id/chat_btn_emoji_7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTintMode="screen"
-            android:defaultFocusHighlightEnabled="true"
-            android:src="@drawable/icons7" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/chat_btn_emoji_7"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTintMode="screen"-->
+<!--            android:defaultFocusHighlightEnabled="true"-->
+<!--            android:src="@drawable/icons7" />-->
 
-        <ImageButton
-            android:id="@+id/chat_btn_emoji_6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTintMode="screen"
-            android:defaultFocusHighlightEnabled="true"
-            android:src="@drawable/icons6" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/chat_btn_emoji_6"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:backgroundTintMode="screen"-->
+<!--            android:defaultFocusHighlightEnabled="true"-->
+<!--            android:src="@drawable/icons6" />-->
 
 
     </LinearLayout>

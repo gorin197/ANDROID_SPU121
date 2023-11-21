@@ -39,6 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import step.learning.android_spu121.orm.ChatMessage;
 import step.learning.android_spu121.orm.ChatResponse;
 
@@ -49,6 +51,8 @@ public class ChatActivity extends AppCompatActivity {
     private final byte[] buffer = new byte[ 8192 ] ;
     private final Gson gson = new Gson() ;
     private final List<ChatMessage> chatMessages = new ArrayList<>() ;
+
+    private  ChatActivity activity_chat;
     private EditText etNik ;
     private EditText etMessage ;
     private ScrollView svContainer ;
@@ -60,6 +64,11 @@ public class ChatActivity extends AppCompatActivity {
     private String selectedSmiley = "";
     //private ImageButton attachmentsButton;
     //private static final int PICK_FILE_REQUEST_CODE = 123;
+
+    private EmojiconEditText emojiconEditText;
+    private ImageView emojiButton;
+    private EmojIconActions emojiIconAction;
+
     private final Map<String,String> emoji= new HashMap<String,String>(){{
         put(":)",new String(Character.toChars(0x1f600)));
         put(":(",new String(Character.toChars(0x1f612)));
@@ -69,6 +78,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_chat );
+        activity_chat=this;
         newMessage=findViewById(R.id.imageView2);
         etNik = findViewById( R.id.chat_et_nik ) ;
         etMessage = findViewById( R.id.chat_et_message ) ;
@@ -76,9 +86,21 @@ public class ChatActivity extends AppCompatActivity {
         llContainer = findViewById( R.id.chat_ll_container ) ;
         findViewById( R.id.chat_btn_send ).setOnClickListener( this::sendButtonClick );
         findViewById( R.id.chat_btn_save_nik ).setOnClickListener( this::saveNikClick );
-        findViewById( R.id.chat_btn_emoji_8).setOnClickListener(this::smileSent_8);//Смайлик1
-        findViewById( R.id.chat_btn_emoji_7).setOnClickListener(this::smileSent_7);//Смайлик2
-        findViewById( R.id.chat_btn_emoji_6).setOnClickListener(this::smileSent_6);//Смайлик3
+//        findViewById( R.id.chat_btn_emoji_8).setOnClickListener(this::smileSent_8);//Смайлик1
+//        findViewById( R.id.chat_btn_emoji_7).setOnClickListener(this::smileSent_7);//Смайлик2
+//        findViewById( R.id.chat_btn_emoji_6).setOnClickListener(this::smileSent_6);//Смайлик3
+
+        emojiButton = findViewById(R.id.emoji_btn);
+        emojiconEditText=(EmojiconEditText)findViewById(R.id.text_field);
+        try {
+            if (emojiconEditText != null) {
+                emojiIconAction = new EmojIconActions(getApplicationContext(), activity_chat.getCurrentFocus(), emojiconEditText, emojiButton);
+                emojiIconAction.ShowEmojIcon();
+            }
+        } catch (Exception e) {
+            Log.e("YourTag", "Error while initializing EmojIconActions", e);
+            throw new RuntimeException(e);
+        }
 
         handler=new Handler();
         handler.post(this::updateChat);
